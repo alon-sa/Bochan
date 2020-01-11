@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>World</title>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="../scripts/ajaxCalls.js"></script>
+    <style type="text/css">
+        td {
+            width: 200px;
+        }
+
+        img {
+            height: 150px;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" />
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script>
+        var table;
+        var tempCountry;
+        var first = true;
+        $(document).ready(function () {
+            
+            tempCountry = JSON.parse(localStorage["tempCountry"]);
+            $('#countryName').html(tempCountry.Name);
+            $('#cont').val(tempCountry.Continent);
+            $('#langTB').val(tempCountry.Lang);
+            $("#countryForm").submit(updateCountry);
+
+            $("#getByCont").click(getByCont);
+        })
+
+        function getByCont() {
+            continent = $('#cont').val();
+            ajaxCall("GET", "../api/countries/continent/" + continent + "", "", getCountriesSuccessCB, getCountriesErrorCB);
+
+        }
+
+        function getCountriesSuccessCB(data) {
+            
+            filteredList = data;
+
+            $('#show').css('display', 'inline');            
+            if (first) {
+                table = $('#contTable').DataTable({
+                    data: filteredList,
+                    columns: [
+                        { 'data': 'Id' },
+                        { 'data': 'Name' },
+                        { 'data': 'Lang' },
+                        { 'data': 'Continent' }
+                    ]
+                });
+            } else {
+                table.clear();
+                for (x of filteredList) {
+                    table.row.add(x);
+                }
+                table.draw();
+            }
+            
+            first = false;
+        }
+
+        //function getCountriesSuccessCB(data) {
+        //    filteredList = data.filter(country => country.Continent.trim() == $('#cont').val());
+        //    console.log(filteredList);
+        //    $('#show').css('display', 'inline');
+        //    var table = $('#contTable').DataTable({
+        //        data: filteredList,
+        //        columns: [
+        //            { 'data': 'Id' },
+        //            { 'data': 'Name' },
+        //            { 'data': 'Lang' },
+        //            { 'data': 'Continent' }
+        //        ]
+        //    });
+        //}
+
+        function getCountriesErrorCB(error) {
+            console.log(error);
+        }
+
+        function updateCountry() {
+            update();
+            return false;
+        }
+
+        function update() {
+
+            edit = {
+                Id: tempCountry.Id,
+                Continent: $('#cont').val(),
+                Name: tempCountry.Name,
+                Lang: $('#langTB').val()
+            }
+            ajaxCall("PUT", "../api/countries/update", JSON.stringify(edit), updateCountrySuccessCB, updateCountryErrorCB);
+        }
+
+        function updateCountrySuccessCB() {
+            console.log("success");
+        }
+        function updateCountryErrorCB(error) {
+            console.log(error);
+        }
+    </script>
+</head>
+
+<body>
+
+
+    <form id="countryForm">
+        <div>
+
+            <h2 id="countryName">The name of the country should be here</h2>
+
+            <table>
+                <tr>
+                    <td>langauge</td>
+                    <td>
+                        <input type="text" id="langTB" required
+                               pattern="[a-z]{2}"
+                               oninvalid="this.setCustomValidity('Format should be two english letters')"
+                               oninput="this.setCustomValidity('')" />
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>continent</td>
+                    <td>
+                        <select id="cont" required>
+                            <option value="asia">asia</option>
+                            <option value="america">america</option>
+                            <option value="europe">europe</option>
+                            <option value="africe">africe</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" value="Update" />
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <input type="button" value="get by continent" id="getByCont" />
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+
+
+        <div id="show" class="container mb-3 mt-3" style="display: none">
+            <table id="contTable" class="table table-striped table-bordered" style="width:100%; border:0px">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Lang</th>
+                        <th>Continent</th>
+                    </tr>
+                </thead>
+
+            </table>
+
+        </div>
+
+
+    </form>
+</body>
+</html>
+

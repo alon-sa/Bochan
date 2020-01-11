@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>World</title>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../scripts/ajaxCalls.js"></script>
+    <style type="text/css">
+        td {
+            width:200px;
+        }
+        img {
+            height:150px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $("#productForm").submit(checkCountry);
+        })
+        
+        function checkCountry() {
+            let countryTB = $("#countryTB").val().toLowerCase();
+            ajaxCall("GET", "../api/countries/" + countryTB + "", "", getCountriesSuccessCB, getCountriesErrorCB);
+            return false;
+        }
+
+        //function checkCountry() {
+        //    ajaxCall("GET", "../api/countries", "", getCountriesSuccessCB, getCountriesErrorCB);
+        //    return false;
+        //}
+
+        function getCountriesSuccessCB(data) {  
+            countryFromDB = data;
+            if (countryFromDB == null) {
+                alert("No such country");
+                return;
+            }
+            
+            let countryTB = $("#countryTB").val().toLowerCase();
+            
+            if (countryFromDB.Name.trim() == countryTB) {
+                let tempCountry = {
+                    Id: countryFromDB.Id,
+                    Continent: countryFromDB.Continent.trim(),
+                    Name: countryFromDB.Name.trim(),
+                    Lang: countryFromDB.Lang.trim()
+                }
+                localStorage["tempCountry"] = JSON.stringify(tempCountry);
+                window.location.href = "countries.html";
+                return;
+            }           
+            
+        }
+
+        //function getCountriesSuccessCB(data) {
+        //    let countryTB = $("#countryTB").val().toLowerCase();
+        //    countryList = data;
+        //    for (x of countryList) {
+        //        if (x.Name.trim() == countryTB) {
+        //            let tempCountry = {
+        //                Id: x.Id,
+        //                Continent: x.Continent.trim(),
+        //                Name: x.Name.trim(),
+        //                Lang: x.Lang.trim()
+        //            }
+        //            localStorage["tempCountry"] = JSON.stringify(tempCountry);
+        //            window.location.href = "countries.html";
+        //            return;
+        //        }                
+        //    }
+        //    alert("No such country");
+        //}
+
+        function getCountriesErrorCB(err) {
+            console.log(err);
+        }
+
+    </script>
+</head>
+
+<body>
+
+    <img src="images/world.jpg" />
+
+    <form id="productForm">
+       
+        <h2>Welcome to the World</h2>
+
+        <table>
+
+            <tr>
+                <td>Name of the country</td>
+                <td>
+                    <input type="text" id="countryTB" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                   <input type="submit" value="Enter"/>
+                </td>
+            </tr>
+        </table>
+                
+</form>
+</body>
+</html>
+

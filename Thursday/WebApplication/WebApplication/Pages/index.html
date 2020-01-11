@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Pizza</title>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../scripts/ajaxCalls.js"></script>
+    <style type="text/css">
+        td {
+            width:200px;
+        }
+        img {
+            height:150px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+
+            $("#productForm input[type='radio']").on('change', function () {
+
+                isKosher = $('input[name=kosher]:checked', '#productForm').val();
+                ajaxCall("GET", "../api/pizzas/" + isKosher, "", getPizzasSuccessCB, getPizzasErrorCB);  
+                
+            });
+
+            $("#productForm").submit(makeOrder);
+        });
+        function makeOrder() {
+            let phonenumber = $('#numberTB').val();
+            let selfpickup = $('#spCB').is(':checked');
+            let address = $('#addressTB').val();
+            let name = $('#nameTB').val();
+            let pizzaid = $('#type').val();
+            order = {
+                Phonenumber: phonenumber,
+                SelfPickup: selfpickup,
+                Address: address,
+                Name: name,
+                PizzaId: pizzaid
+            }
+        ajaxCall("POST", "../api/orders", JSON.stringify(order), PostOrderSuccessCB, PostOrderErrorCB);
+            return false;
+        }
+        
+
+        function PostOrderSuccessCB(data) {
+            notFirstOrder = data;
+            if (notFirstOrder == 1) {
+                alert("Happy to Serve you Again");
+            }
+            $('input[name=kosher]').prop('checked', false)
+            $('#numberTB').val("");
+            $('#spCB').prop('checked', false);
+            $('#addressTB').val("");
+            $('#nameTB').val("");
+            $('#type').val("");
+            alert("Your order have been submited")
+        }
+        function PostOrderErrorCB(error) {
+            console.log(error);
+        }
+
+        function getPizzasSuccessCB(data) {
+
+            $("#type").empty();
+            var pizzaType = new Option("select the type of pizza", "");
+            $(pizzaType).html("select the type of pizza");
+            $("#type").append(pizzaType);
+
+            var pizzaList = data;
+            for (type of pizzaList) {
+                var pizzaType = new Option(type.Name, type.Id);
+                $(pizzaType).html(type.Name);
+                $("#type").append(pizzaType);
+            }
+        }
+        function getPizzasErrorCB(error) {
+            console.log(error);
+        }
+
+
+        
+    </script>
+</head>
+
+<body>
+
+<img src="images/pizza.png" />
+
+    <form id="productForm">
+    <div>
+    
+        <h2>Best Pizza in the Universe</h2>
+
+        <table>
+
+            <tr>
+                <td>Kosher</td>
+                <td>
+                      Kosher <input type="radio" name="kosher" value="true" required> <br>
+                      Not Kosher <input type="radio" name="kosher" value="false" required> 
+                </td>
+            </tr>
+
+            <tr>
+                <td>Type</td>
+                <td>
+                    <select id="type" required>
+                        <option value="">select the type of pizza</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>
+                    <input type="text" id="nameTB" required/>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Phone Number</td>
+                <td>
+                    <input type="tel" id="numberTB" required
+                           pattern="^\d{10}$"
+                           oninvalid="this.setCustomValidity('Format should be 10 digits')"
+                           oninput="this.setCustomValidity('')" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>Address</td>
+                <td>
+                    <input type="text" id="addressTB" required/>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Self Pickup</td>
+                <td>
+                    <input type="checkbox" id="spCB" />
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                   <input type="submit" value="Add"/>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+
+</form>
+</body>
+</html>
+

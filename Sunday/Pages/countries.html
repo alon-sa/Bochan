@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Phone Book App</title>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../scripts/ajaxCalls.js"></script>
+    <style type="text/css">
+        td {
+            width:200px;
+        }
+        img {
+            height:150px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <form id="countryForm">
+    <div>
+    
+        <h2>The name of the country should be here</h2>
+
+        <table>
+            <tr>
+                <td>langauge</td>
+                <td>
+                    <input type="text" id="langTB" />
+                </td>
+            </tr>
+            <tr>
+                <td>continent</td>
+                <td>
+                    <select>
+                        <option value="asia">asia</option>
+                        <option value="america">america</option>
+                        <option value="europe">europe</option>
+                        <option value="africe">africe</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Update" />
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    <input type="button" value="get by continent" />
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+
+    <div id="show">
+
+        <h1>The DataTable Goes Here</h1>
+        
+    </div>
+
+        
+</form>
+</body>
+</html>
+

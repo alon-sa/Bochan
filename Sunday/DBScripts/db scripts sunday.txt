@@ -1,0 +1,16 @@
+CREATE TABLE [Countries](
+	[id] SMALLINT IDENTITY (1, 1) NOT NULL,
+	[name] CHAR(30) NOT NULL,
+	[lang] CHAR(2) NOT NULL,
+	[continent] CHAR(2) NOT NULL,
+	PRIMARY KEY (id)
+)
+
+INSERT INTO Countries (name,lang,continent) VALUES ('israel', 'he', 'asia');
+INSERT INTO Countries (name,lang,continent) VALUES ('usa', 'en', 'america');
+INSERT INTO Countries (name,lang,continent) VALUES ('canada', 'en', 'america');
+INSERT INTO Countries (name,lang,continent) VALUES ('england', 'en', 'europe');
+INSERT INTO Countries (name,lang,continent) VALUES ('china', 'ch', 'asia');
+
+
+

@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Phone Book App</title>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../scripts/ajaxCalls.js"></script>
+    <style type="text/css">
+        td {
+            width:200px;
+        }
+        img {
+            height:150px;
+        }
+    </style>
+</head>
+
+<body>
+
+<img src="images/pizza.png" />
+
+    <form id="productForm">
+    <div>
+    
+        <h2>Best Pizza in the Universe</h2>
+
+        <table>
+
+            <tr>
+                <td>Kosher</td>
+                <td>
+                      Kosher <input type="radio" name="kosher" value="true"> <br>
+                      Not Kosher <input type="radio" name="kosher" value="false"> 
+                </td>
+            </tr>
+
+            <tr>
+                <td>Type</td>
+                <td>
+                    <select id="type">
+                        <option value="">select the type of pizza</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>
+                    <input type="text" id="nameTB" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>Phone Number</td>
+                <td>
+                    <input type="number" id="numberTB" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>Address</td>
+                <td>
+                    <input type="text" id="addressTB" />
+                </td>
+            </tr>
+
+            <tr>
+                <td>Self Pickup</td>
+                <td>
+                    <input type="checkbox" id="spCB" />
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                   <input type="submit" value="Add"/>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+
+</form>
+</body>
+</html>
+

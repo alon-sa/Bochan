@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Pizza</title>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" />
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="../scripts/ajaxCalls.js"></script>
+    <style type="text/css">
+        td {
+            width: 200px;
+        }
+
+        img {
+            height: 150px;
+        }
+
+        .green {
+            background-color: green !important;
+        }
+    </style>
+
+    <script>
+        var table;
+        var first = true;
+        $(document).ready(function () {
+            $('#productForm').submit(addOrder);
+        });
+
+        function addOrder() {
+            let name = $('#nameTB').val();
+            let address = $('#addressTB').val();
+            let phoneNumber = $('#numberTB').val();
+            let selfPickup = $('#spCB').prop('checked');
+            selfPickup = selfPickup ? 1 : 0;
+            let pizzaId = $('#type').val();
+
+            order = {
+                Name: name,
+                Address: address,
+                Phonenumber: phoneNumber,
+                SelfPickup: parseInt(selfPickup),
+                PizzaId: parseInt(pizzaId)
+            }
+            ajaxCall("POST", "../api/orders", JSON.stringify(order), postOrderSuccessCB, postOrderErrorCB);
+
+            return false;
+        }
+
+        function postOrderSuccessCB() {
+            $('#nameTB').val('');
+            $('#addressTB').val('');
+            $('#numberTB').val('');
+            $('#spCB').prop('checked', false);
+            $('#type').val('');
+
+            ajaxCall("GET", "../api/orders", "", getOrdersSuccessCB, getOrdersErrorCB);
+
+            alert("Order received");
+
+
+
+        }
+        function postOrderErrorCB(error) {
+            console.log(error);
+        }
+
+        ajaxCall("GET", "../api/pizzas", "", getPizzasSuccessCB, getPizzasErrorCB);
+
+        function getPizzasSuccessCB(data) {
+
+            pizzaList = data;
+            for (pizza of pizzaList) {
+                var type = new Option(pizza.Name, pizza.Id);
+                $(type).html(pizza.Name);
+                $("#type").append(type);
+            }
+
+        }
+
+        function getPizzasErrorCB(error) {
+            console.log(error);
+
+        }
+
+
+
+
+
+        ajaxCall("GET", "../api/orders", "", getOrdersSuccessCB, getOrdersErrorCB);
+
+        function getOrdersSuccessCB(data) {
+
+            ordersList = data;
+            if (first) {
+                table = $('#ordersTable').DataTable({
+                    data: ordersList,
+                    columns: [
+                        { 'data': 'Id' },
+                        { 'data': 'Name' },
+                        { 'data': 'Address' },
+                        { 'data': 'Phonenumber' },
+                        {
+                            'data': 'SelfPickup',
+                            'render': function (selfpickup) {
+                                if (selfpickup) {
+                                    checked = "checked";
+                                    
+                                } else {
+                                    checked = "";
+                                }
+                                return "<input type='checkbox' " + checked + " />"
+                            }
+                        },
+                        { 'data': 'PizzaId' }
+                    ],
+                    createdRow: function (row, data, dataIndex) {
+                        if (data.SelfPickup) {
+                            $(row).addClass('green');
+                        }
+                    }
+                });
+            } else {
+                table.clear();
+                for (x of ordersList) {
+                    table.row.add(x);
+                }
+                table.draw();
+            }
+
+            first = false;
+
+
+        }
+
+        function getOrdersErrorCB(error) {
+            console.log(error);
+
+        }
+
+
+
+
+
+    </script>
+</head>
+
+<body>
+
+    <img src="images/pizza.png" />
+
+    <form id="productForm">
+        <div>
+
+            <h2>Best Pizza in the Universe</h2>
+
+            <table>
+                <tr>
+                    <td>Type</td>
+                    <td>
+                        <select id="type" required>
+                            <option value="">select the type of pizza</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>
+                        <input type="text" id="nameTB" required />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Phone Number</td>
+                    <td>
+                        <input type="text" id="numberTB" required 
+                               pattern="^\d{10}$"
+                               oninvalid="this.setCustomValidity('Format should be 10 digits')"
+                               oninput="this.setCustomValidity('')" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Address</td>
+                    <td>
+                        <input type="text" id="addressTB" required />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Self Pickup</td>
+                    <td>
+                        <input type="checkbox" id="spCB" />
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>
+                        <input type="submit" value="Add" />
+                    </td>
+                </tr>
+            </table>
+
+
+        </div>
+
+        <div id="show">
+
+            <h2>Orders</h2>
+
+            <div class="container mb-3 mt-3">
+                <table id="ordersTable" class="table table-striped table-bordered" style="width:100%; border:0px">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Phone Number</th>
+                            <th>Self Pickup</th>
+                            <th>Pizza Type</th>
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+
+        </div>
+
+
+    </form>
+</body>
+</html>
+

@@ -1,0 +1,23 @@
+CREATE TABLE [Pizza] (
+	[id] SMALLINT IDENTITY (1, 1) NOT NULL,
+	[name] NVARCHAR(30) NOT NULL,
+	PRIMARY KEY (id)
+)
+
+CREATE TABLE [Orders] (
+	[id] SMALLINT IDENTITY (1, 1) NOT NULL,
+	[name] NVARCHAR(30) NOT NULL,
+   	[address] NVARCHAR(100) NOT NULL,
+   	[phonenumber] NVARCHAR(10) NOT NULL,
+	[selfPickup] BIT NOT NULL,
+	[pizzaId] SMALLINT,
+	PRIMARY KEY (id),
+	FOREIGN KEY (pizzaId) REFERENCES Pizza(id)
+)
+
+INSERT INTO Pizza (name) VALUES ('Peperoni');
+INSERT INTO Pizza (name) VALUES ('Salami');
+INSERT INTO Pizza (name) VALUES ('Diavola');
+INSERT INTO Pizza (name) VALUES ('Napolitana');
+
+

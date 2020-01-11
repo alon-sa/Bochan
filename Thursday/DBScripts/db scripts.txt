@@ -1,0 +1,22 @@
+CREATE TABLE [Pizza_] (
+	[id] SMALLINT IDENTITY (1, 1) NOT NULL,
+	[name] VARCHAR(30) NOT NULL,
+	[kosher] BIT NOT NULL,
+	PRIMARY KEY (id)
+)
+
+CREATE TABLE [Orders_] (
+	[id] SMALLINT IDENTITY (1, 1) NOT NULL,
+	[name] VARCHAR(30) NOT NULL,
+    [address] VARCHAR(100) NOT NULL,
+    [phonenumber] VARCHAR(10) NOT NULL,
+	[selfPickup] BIT NOT NULL,
+	[pizzaId] SMALLINT,
+	PRIMARY KEY (id),
+	FOREIGN KEY (pizzaId) REFERENCES Pizza(id)
+)
+
+INSERT INTO Pizza_ (name, kosher) VALUES ('Peperoni', 0);
+INSERT INTO Pizza_ (name, kosher) VALUES ('Salami', 0);
+INSERT INTO Pizza_ (name, kosher) VALUES ('Diavola', 1);
+INSERT INTO Pizza_ (name, kosher) VALUES ('Napolitana', 1);
